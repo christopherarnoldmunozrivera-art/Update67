@@ -90,10 +90,32 @@ end)
 -- PARTICULAS
 for i = 1,12 do
     local dot = Instance.new("Frame", frame)
-    dot.Size = UDim2.new(0,3,0,3)
+    local size = math.random(2,6)
+dot.Size = UDim2.new(0,size,0,size)
     dot.BackgroundColor3 = Color3.fromRGB(0,200,255)
+task.spawn(function()
+	while dot.Parent do
+		dot.BackgroundColor3 = Color3.fromRGB(0,255,255)
+		task.wait(0.4)
+
+		dot.BackgroundColor3 = Color3.fromRGB(0,100,255)
+		task.wait(0.4)
+
+		dot.BackgroundColor3 = Color3.fromRGB(180,0,255)
+		task.wait(0.4)
+
+		dot.BackgroundColor3 = Color3.fromRGB(255,0,180)
+		task.wait(0.4)
+	end
+end)
+
     dot.BackgroundTransparency = 0.3
     Instance.new("UICorner", dot)
+local glow = Instance.new("UIStroke")
+glow.Parent = dot
+glow.Thickness = 1
+glow.Transparency = 0.5
+
 
     task.spawn(function()
         while true do
@@ -113,11 +135,66 @@ local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1,-60,0,30)
 title.Position = UDim2.new(0,10,0,0)
 title.Text = "⚡ MUÑOZ NEXUS"
+local orb = Instance.new("Frame", frame)
+orb.Size = UDim2.new(0,8,0,8)
+orb.Position = UDim2.new(0,5,0,12)
+orb.BackgroundColor3 = Color3.fromRGB(0,255,255)
+orb.BackgroundTransparency = 0.2
+
+Instance.new("UICorner", orb).CornerRadius = UDim.new(1,0)
+
 title.TextColor3 = Color3.fromRGB(0,220,255)
 title.BackgroundTransparency = 1
-title.Font = Enum.Font.Arcade
+title.Font = Enum.Font.GothamBlack
 title.TextSize = 16
 title.TextXAlignment = Enum.TextXAlignment.Left
+
+
+
+task.spawn(function()
+	while true do
+		TweenService:Create(title,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(0,255,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(title,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(0,100,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(title,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(180,0,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(title,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(255,0,180)
+		}):Play()
+		task.wait(0.8)
+	end
+end)
+task.spawn(function()
+	while true do
+		TweenService:Create(orb,TweenInfo.new(1),{
+			Size = UDim2.new(0,14,0,14),
+			BackgroundTransparency = 0.8
+		}):Play()
+
+		task.wait(1)
+
+		orb.Size = UDim2.new(0,8,0,8)
+		orb.BackgroundTransparency = 0.2
+	end
+end)
+
+
+local titleStroke = Instance.new("UIStroke")
+titleStroke.Parent = title
+titleStroke.Thickness = 1.5
+titleStroke.Transparency = 0.3
+
+
 
 -- SUBTEXTO
 local sub = Instance.new("TextLabel", frame)
@@ -225,9 +302,20 @@ local function createToggle(name, y)
         TweenService:Create(toggleBtn, TweenInfo.new(0.2), {
             BackgroundColor3 = state and Color3.fromRGB(0,170,255) or Color3.fromRGB(60,70,100)
         }):Play()
+TweenService:Create(label, TweenInfo.new(0.2), {
+    TextColor3 = state
+        and Color3.fromRGB(0,255,255)
+        or Color3.fromRGB(255,255,255)
+}):Play()
+
+knob.BackgroundColor3 = state
+    and Color3.fromRGB(0,255,255)
+    or Color3.fromRGB(180,180,180)
     end)
 
-    return function() return state end
+    return function()
+        return state
+    end
 end
 
 local autoBuild = createToggle("Auto Construir", 45)
@@ -235,6 +323,72 @@ local upgradeOn = createToggle("Auto Mejorar", 80)
 local sellOn = createToggle("Auto Vender", 115)
 local attackOthers = createToggle("Eliminar Otras Bases", 150)
 local helpOthers = createToggle("Mejorar Otras Bases", 185)
+-- MINI CRONOMETRO RAINBOW NEON
+local timerFrame = Instance.new("Frame", frame)
+timerFrame.Size = UDim2.new(0,110,0,22)
+timerFrame.Position = UDim2.new(0.5,-55,1,-33)
+timerFrame.BackgroundColor3 = Color3.fromRGB(18,22,40)
+timerFrame.BackgroundTransparency = 0.08
+Instance.new("UICorner", timerFrame).CornerRadius = UDim.new(0,9)
+
+
+
+
+
+local timerText = Instance.new("TextLabel", timerFrame)
+timerText.Size = UDim2.new(1,0,1,0)
+timerText.BackgroundTransparency = 1
+timerText.Font = Enum.Font.GothamBold
+timerText.TextSize = 11
+timerText.Text = "✨ 00:00:00"
+timerText.TextColor3 = Color3.fromRGB(255,255,255)
+local timerStroke = Instance.new("UIStroke")
+timerStroke.Parent = timerText
+timerStroke.Thickness = 1
+timerStroke.Transparency = 0.4
+
+local startTime = tick()
+
+task.spawn(function()
+	while true do
+		local elapsed = math.floor(tick() - startTime)
+
+		local h = math.floor(elapsed / 3600)
+		local m = math.floor((elapsed % 3600) / 60)
+		local s = elapsed % 60
+
+		timerText.Text = string.format("✨ %02d:%02d:%02d", h, m, s)
+
+		task.wait(1)
+	end
+end)
+
+
+task.spawn(function()
+	while true do
+		TweenService:Create(timerText,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(0,255,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(timerText,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(0,100,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(timerText,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(180,0,255)
+		}):Play()
+		task.wait(0.8)
+
+		TweenService:Create(timerText,TweenInfo.new(0.8),{
+			TextColor3 = Color3.fromRGB(255,0,180)
+		}):Play()
+		task.wait(0.8)
+	end
+end)
+
+
 
 -- LOOP
 task.spawn(function()
